@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.util.Pair;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
