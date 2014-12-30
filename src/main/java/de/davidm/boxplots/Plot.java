@@ -1,9 +1,6 @@
 package de.davidm.boxplots;
 
 import org.apache.commons.math3.util.Pair;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -105,7 +102,6 @@ public abstract class Plot {
         }
         return Pair.create(globalMin, globalMax);
     }
-
 
     /**
      * Checks whether a given bin is out of bounds
