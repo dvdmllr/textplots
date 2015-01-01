@@ -103,6 +103,7 @@ public class Histogram extends Plot {
         int rowCount = 0;
         for (Pair<double[], String> row : plot) {
             String line = "";
+
             // Add a legend to the left
             if (legend) {
                 String interval = intervalString(row.getFirst()[0], row.getFirst()[1]);
@@ -114,6 +115,7 @@ public class Histogram extends Plot {
                 line += CHARACTER_COLUMN_DIVISOR;
             }
             line += row.getSecond();
+
             // Add bin count to the right
             if (legend) {
                 line += CHARACTER_COLUMN_DIVISOR;
@@ -128,6 +130,7 @@ public class Histogram extends Plot {
             System.out.println(line);
             rowCount++;
         }
+
         // Write x axis labelling under plot
         if(legend) {
             String line = "";
@@ -199,6 +202,4 @@ public class Histogram extends Plot {
         }
         return output;
     }
-
-
 }
