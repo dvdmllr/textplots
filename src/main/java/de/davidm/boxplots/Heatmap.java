@@ -123,6 +123,7 @@ public class Heatmap extends Plot {
     /**
      * Print the heatmap to command line
      */
+    @Override
     public void printPlot(){
 
         String[] plot = heatmap(X.getSecond(), Y.getSecond(), width, height, minX, maxX, minY, maxY);
@@ -140,14 +141,14 @@ public class Heatmap extends Plot {
 
             df.format(maxY.doubleValue());
             for (int i = 0; i < plot.length; i++) {
-                // add strings to the left if we are not in first line
+                // Add strings to the left if we are not in first line
                 if (i > 0) {
                     for (int j = 0; j < leftSize; j++) {
                         out += CHARACTER_EMPTY_BIN;
                     }
                 }
                 out += CHARACTER_COLUMN_DIVISOR;
-                // show min and max values for first and last line or fill otherwise
+                // Show min and max values for first and last line or fill otherwise
                 if (i == 0) {
                     out += maxYString;
                     for (int j = 0; j < (maxLengthY - maxYString.length()); j++) {
@@ -164,7 +165,7 @@ public class Heatmap extends Plot {
                     }
                 }
                 out += CHARACTER_COLUMN_DIVISOR;
-                // add actual plot row
+                // Add actual plot row
                 out += plot[i] + CHARACTER_COLUMN_DIVISOR + "\n";
             }
 
@@ -172,7 +173,7 @@ public class Heatmap extends Plot {
              * Add a legend for X below
              */
 
-            // add min and max values
+            // Add min and max values
             String minXString = df.format(minX.doubleValue());
             String maxXString = df.format(maxX.doubleValue());
             for (int j = 0; j < leftSize + maxLengthY + 1; j++) {
@@ -186,7 +187,7 @@ public class Heatmap extends Plot {
             out += maxXString;
             out += CHARACTER_COLUMN_DIVISOR + "\n";
 
-            // add name of data series
+            // Add name of data series
             int nameLength = X.getFirst().length();
             for (int j = 0; j < maxLengthY + 1 + Y.getFirst().length(); j++) {
                 out += CHARACTER_EMPTY_BIN;
@@ -223,7 +224,7 @@ public class Heatmap extends Plot {
     protected static String[] heatmap(
         double[] X, double[] Y, int width, int height, Double minX, Double maxX, Double minY, Double maxY) {
 
-        // locate visual boundaries
+        // Locate visual boundaries
         Pair<Double, Double> minMaxX = getMinimumAndMaximum(X);
         Pair<Double, Double> minMaxY = getMinimumAndMaximum(Y);
         if(minX==null) minX=minMaxX.getFirst();
@@ -231,25 +232,25 @@ public class Heatmap extends Plot {
         if(maxX==null) maxX=minMaxX.getSecond();
         if(maxY==null) maxY=minMaxY.getSecond();
 
-        // locate bins for visual boundaries
+        // Locate bins for visual boundaries
         int minBoundX = locateBin(minX, width, minX, maxX);
         int maxBoundX = locateBin(maxX, width, minX, maxX);
         int minBoundY = locateBin(minY, height, minY, maxY);
         int maxBoundY = locateBin(maxY, height, minY, maxY);
 
-        // fill outputdata 2d-array counting occurrences of xy-values
+        // Fill outputdata 2d-array counting occurrences of xy-values
         double[][] outputData = new double[width][height]; // keep track of data in bins
-        // fill with 0s
+        // Fill with 0s
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 outputData[x][y] = 0d;
             }
         }
-        // fill with values
+        // Fill with values
         for (int x = 0; x < X.length; x++) {
             for (int y = 0; y < Y.length; y++) {
-                // count the occurrences
-                // distributed over two bins to avoid skew introduced by floor operation
+                // Count the occurrences
+                // Distributed over two bins to avoid skew introduced by floor operation
                 List<Pair<Integer, Double>> binsX = locateBins(X[x], width, minX, maxX);
                 List<Pair<Integer, Double>> binsY = locateBins(Y[y], height, minY, maxY);
                 for(int i = 0; i < binsX.size(); i++){
@@ -265,7 +266,7 @@ public class Heatmap extends Plot {
             }
         }
 
-        // create density mapping
+        // Create density mapping
         List<Double> density = new ArrayList<>();
         for (double[] data : outputData) {
             for (double value : data) {
@@ -276,7 +277,7 @@ public class Heatmap extends Plot {
         }
         DescriptiveStatistics densityStats = new DescriptiveStatistics(ArrayUtils.toPrimitive(density.toArray(new Double[] { })));
 
-        // generate output
+        // Generate output
         String[][] output = new String[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -288,7 +289,7 @@ public class Heatmap extends Plot {
             }
         }
 
-        // build results
+        // Build results
         String[] out = new String[height];
 
         for(int wY = 0; wY < height; wY++){

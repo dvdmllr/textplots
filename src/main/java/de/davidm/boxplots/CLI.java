@@ -45,7 +45,7 @@ public class CLI {
         CmdLineParser parser = new CmdLineParser(this);
         try {
             parser.parseArgument(args);
-            // transform data string to descriptive stat objects
+            // Transform data string to descriptive stat objects
             List<Pair<String, double[]>> data = parse(cmdData);
             Plot plot = null;
             if(type.equals("boxplot")){
