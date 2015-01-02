@@ -8,11 +8,10 @@ import org.kohsuke.args4j.Option;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A command line interface for textplots
+ */
 public class CLI {
-    /*
-     * Run from command line
-     */
-
     @Option(name="-width", usage="width of printed boxplots")
     private Integer cmdWidth = Plot.DEFAULT_WIDTH;
 
@@ -33,6 +32,9 @@ public class CLI {
 
     @Option(name="-maxY", usage="minimum value in plot (for Y)")
     private Double cmdMaxY = null;
+
+    @Option(name="-disableLegend", usage="set if no legend should be printed")
+    private boolean cmdDisableLegend = false;
 
     @Option(name="-type", usage="type of plot {boxplot, heatmap}")
     private String type = "boxplot";
@@ -55,16 +57,23 @@ public class CLI {
                         .plotObject();
             } else if(type.equals("heatmap")){
                 if(data.size()!=2){
-                    throw new IllegalArgumentException("Data needs to contain exactly 2 set which will be parsed to X and Y values");
+                    throw new IllegalArgumentException("Data needs to contain exactly 2 sets which will be parsed to X and Y values");
                 }
                 plot = new Heatmap.HeatmapBuilder(data.get(0), data.get(1))
                         .setPlotLimits(cmdMin, cmdMax, cmdMinY, cmdMaxY)
                         .setSize(cmdWidth, cmdHeight)
                         .plotObject();
+            } else if(type.equals("histogram")){
+                if(data.size()!=1){
+                    throw new IllegalArgumentException("Data needs to contain exactly 1 data set");
+                }
+                plot = new Histogram.HistogramBuilder(data.get(0))
+                        .setWidth(cmdWidth)
+                        .plotObject();
             } else {
                 throw new IllegalArgumentException("Could not match plot type. Needs to be one of (boxplot, heatmap)");
             }
-            plot.printPlot();
+            plot.printPlot(!cmdDisableLegend);
         } catch (CmdLineException e) {
             throw new CmdLineException(parser, "Could not parse given arguments", e);
         }

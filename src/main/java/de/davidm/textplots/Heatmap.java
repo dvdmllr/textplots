@@ -23,14 +23,14 @@ public class Heatmap extends Plot {
     private final Pair<String, double[]> Y;
     private final int width, height;
     private final Double minX, maxX, minY, maxY;
-    private final boolean legend;
+    private final boolean smoothing;
 
     private Heatmap(HeatmapBuilder heatmapBuilder) {
         this.X = heatmapBuilder.x;
         this.Y = heatmapBuilder.y;
         this.width = heatmapBuilder.width;
         this.height = heatmapBuilder.height;
-        this.legend = heatmapBuilder.legend;
+        this.smoothing = heatmapBuilder.smoothing;
 
         // Set min and max values X
         Pair<Double, Double> minMaxData = getMinimumAndMaximum(X.getSecond());
@@ -57,7 +57,7 @@ public class Heatmap extends Plot {
         Double maxX = null, maxY = null;
         int width = DEFAULT_WIDTH;
         int height = DEFAULT_HEIGHT;
-        boolean legend = true;
+        boolean smoothing = true;
 
         /**
          * Construct a Heatmap
@@ -99,15 +99,16 @@ public class Heatmap extends Plot {
         }
 
         /**
-         * @param enable true to show legend, false otherwise
+         * @param smoothing if true output will be smoothed to better fit to limited amount of bins in command line
+         * @return
          */
-        public HeatmapBuilder enableLegend(boolean enable){
-            this.legend = enable;
+        public HeatmapBuilder setSmoothing(boolean smoothing){
+            this.smoothing = smoothing;
             return this;
         }
 
         /**
-         * @return a Plot object with user settings
+         * @return a Heatmap object with user settings
          */
         public Heatmap plotObject(){
             // Check for correct width
@@ -121,19 +122,20 @@ public class Heatmap extends Plot {
     }
 
     /**
-     * Print the heatmap to command line
+     * @return the Heatmap in a single String
      */
     @Override
-    public void printPlot(){
+    public String plot(boolean printLegend){
+        String out = "";
 
-        String[] plot = heatmap(X.getSecond(), Y.getSecond(), width, height, minX, maxX, minY, maxY);
+        String[] plot = heatmapString(X.getSecond(), Y.getSecond(), width, height, minX, maxX, minY, maxY, smoothing);
 
-        if(legend) {
+        if(printLegend) {
+
             /*
              * Add a legend for Y to the left
              */
-
-            String out = Y.getFirst();
+            out = Y.getFirst();
             int leftSize = out.length();
             String minYString = df.format(minY.doubleValue());
             String maxYString = df.format(maxY.doubleValue());
@@ -172,8 +174,6 @@ public class Heatmap extends Plot {
             /*
              * Add a legend for X below
              */
-
-            // Add min and max values
             String minXString = df.format(minX.doubleValue());
             String maxXString = df.format(maxX.doubleValue());
             for (int j = 0; j < leftSize + maxLengthY + 1; j++) {
@@ -198,19 +198,17 @@ public class Heatmap extends Plot {
             }
             out += X.getFirst();
             out += CHARACTER_COLUMN_DIVISOR + "\n";
-            System.out.println(out);
         } else {
-            String out = "";
             for(String line : plot){
                 out += line + "\n";
             }
-            System.out.println(out);
         }
 
+        return out;
     }
 
     /**
-     * Create a string representation of a Heatmap for given variables
+     * Create a string representation of a Heatmap for given variables with one row per line in a String[]
      * @param X input X variables
      * @param Y input Y variables
      * @param width width of plot
@@ -219,10 +217,11 @@ public class Heatmap extends Plot {
      * @param maxX x axis visual maximum value
      * @param minY y axis visual minimum value
      * @param maxY y axis visual maximum value
+     * @param smoothing if true output values will be smoothed
      * @return a Heatmap as String where each element equals a line of the map
      */
-    protected static String[] heatmap(
-        double[] X, double[] Y, int width, int height, Double minX, Double maxX, Double minY, Double maxY) {
+    protected static String[] heatmapString(
+        double[] X, double[] Y, int width, int height, Double minX, Double maxX, Double minY, Double maxY, boolean smoothing) {
 
         // Locate visual boundaries
         Pair<Double, Double> minMaxX = getMinimumAndMaximum(X);
@@ -248,23 +247,32 @@ public class Heatmap extends Plot {
         }
         // Fill with values
         for (int x = 0; x < X.length; x++) {
-            for (int y = 0; y < Y.length; y++) {
-                // Count the occurrences
+            int y = x;
+            // Count the occurrences
+            if (smoothing) {
                 // Distributed over two bins to avoid skew introduced by floor operation
                 List<Pair<Integer, Double>> binsX = locateBins(X[x], width, minX, maxX);
                 List<Pair<Integer, Double>> binsY = locateBins(Y[y], height, minY, maxY);
-                for(int i = 0; i < binsX.size(); i++){
+                for (int i = 0; i < binsX.size(); i++) {
                     int binX = binsX.get(i).getFirst();
                     int binY = binsY.get(i).getFirst();
                     double valueX = binsX.get(i).getSecond();
                     double valueY = binsY.get(i).getSecond();
                     double value = (valueX + valueY) / (double) binsX.size();
-                    if(!isOutOfBounds(binX, minBoundX, maxBoundX)&&!isOutOfBounds(binY, minBoundY, maxBoundY)){
-                        outputData[binX][binY] += value;
+                    if (!isOutOfBounds(binX, minBoundX, maxBoundX) && !isOutOfBounds(binY, minBoundY, maxBoundY)) {
+                        outputData[binX][height - binY - 1] += value;
                     }
+                }
+            } else {
+                // Distributed over two bins to avoid skew introduced by floor operation
+                int binX = locateBin(X[x], width, minX, maxX);
+                int binY = locateBin(Y[y], height, minY, maxY);
+                if (!isOutOfBounds(binX, minBoundX, maxBoundX) && !isOutOfBounds(binY, minBoundY, maxBoundY)) {
+                    outputData[binX][height - binY - 1] += 1;
                 }
             }
         }
+
 
         // Create density mapping
         List<Double> density = new ArrayList<>();

@@ -24,7 +24,14 @@ public abstract class Plot {
     /**
      * Plot to command line
      */
-    public abstract void printPlot();
+    public void printPlot(boolean printLegend){
+        System.out.println(plot(printLegend));
+    }
+
+    /**
+     * Returns the plot as a single String
+     */
+    public abstract String plot(boolean printLegend);
 
     /**
      * @param value any given value of the data series
@@ -35,10 +42,19 @@ public abstract class Plot {
      * @return bin for a given value
      */
     protected static int locateBin(double value, int width, Double min, Double max) {
-        double span = max - min;
-        double binWidth = span / (1d * width - 1);
-        double bin = Math.floor((value - min) / binWidth);
-        return (int) bin;
+        /*
+         TODO check - leads to errors in certain occassions
+        */
+        double span = (max - min);
+        double binWidth = span / (1d * width);
+        int i = 0;
+        for(double d = min + binWidth; d < max; d = d + binWidth){
+            if(value < d) {
+                return i;
+            }
+            i++;
+        }
+        return i;
     }
 
     /**
@@ -50,20 +66,23 @@ public abstract class Plot {
      * @return 2 bins surrounding given value and assignment percentage for each bin (avoid skew by floor operation)
      */
     protected static List<Pair<Integer, Double>> locateBins(double value, int width, Double min, Double max) {
-        double span = max - min;
-        double binWidth = span / (1d * width - 1);
-
-        double binDouble = (value - min) / binWidth;
-        int bin1 = (int) binDouble;
-        int bin2 = (int) binDouble + 1;
-        double bin1Prob = bin2 - binDouble;
-        double bin2Prob = 1 - bin1Prob;
-
+        double span = (max - min);
+        double binWidth = span / (1d * width);
         List<Pair<Integer, Double>>  output = new ArrayList<>();
-        output.add(Pair.create(bin1, bin1Prob));
-        output.add(Pair.create(bin2, bin2Prob));
-
-        return output;
+        int i = 0;
+        for(double d = min + binWidth; d <= max + binWidth; d = d + binWidth){
+            if(value <= d) {
+                int bin1 = i;
+                int bin2 = i + 1;
+                double bin2Prob = (d - value) / binWidth;
+                double bin1Prob = 1 - bin2Prob;
+                output.add(Pair.create(bin1, bin1Prob));
+                output.add(Pair.create(bin2, bin2Prob));
+                return output;
+            }
+            i++;
+        }
+        throw new IllegalStateException("Error finding bin for given values");
     }
 
     /**

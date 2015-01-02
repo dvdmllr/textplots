@@ -16,15 +16,18 @@ public class Histogram extends Plot {
     public static final String LEGEND_INTERVAL_RIGHTBORDER = ")";
 
     private final Pair<String, double[]> data;
+    private final EmpiricalDistribution dist;
     private final int width;
-    private final boolean legend;
     private final int bins;
 
     private Histogram(HistogramBuilder histogramBuilder){
         this.data = histogramBuilder.data;
         this.width = histogramBuilder.width;
-        this.legend = histogramBuilder.legend;
         this.bins = histogramBuilder.bins;
+
+        // Create a distribution of data for bins number of bins
+        dist = new EmpiricalDistribution(bins);
+        dist.load(data.getSecond());
     }
 
     public static class HistogramBuilder {
@@ -32,7 +35,6 @@ public class Histogram extends Plot {
         Pair<String, double[]> data;
         int bins = DEFAULT_NR_BINS;
         int width = DEFAULT_WIDTH;
-        boolean legend = true;
 
         public HistogramBuilder(Pair<String, double[]> data){
             this.data = data;
@@ -57,15 +59,7 @@ public class Histogram extends Plot {
         }
 
         /**
-         * @param enable true to show legend, false otherwise
-         */
-        public HistogramBuilder enableLegend(boolean enable){
-            this.legend = enable;
-            return this;
-        }
-
-        /**
-         * @return a Plot object with user settings
+         * @return a Histogram object with user settings
          */
         public Histogram plotObject(){
             // Check for correct width
@@ -73,39 +67,38 @@ public class Histogram extends Plot {
                     "Width is set to " + width + " but needs to be in " + "[" + MIN_WIDTH + "," + MAX_WIDTH + "]");
             return new Histogram(this);
         }
-
     }
 
     /**
      * Print the Histogram to command line
+     *
+     * @param printLegend switch legend on/off
      */
     @Override
-    public void printPlot() {
-        // Create a distribution of data for bins number of bins
-        EmpiricalDistribution dist = new EmpiricalDistribution(bins);
-        dist.load(data.getSecond());
+    public String plot(boolean printLegend) {
+        String out = "";
 
         // Create the histogram out of given distribution
-        List<Pair<double[], String>> plot = histogram(dist);
+        List<Pair<double[], String>> plot = histogram();
         List<SummaryStatistics> bounds = dist.getBinStats();
         long N = dist.getSampleStats().getN();
 
         // Get the length of the longest bin interval string
         int maxLengthLeft = 0;
-        if(legend) {
+        if(printLegend) {
             for(Pair<double[], String> row : plot){
                 int length = intervalString(row.getFirst()[0], row.getFirst()[1]).length();
                 maxLengthLeft = Math.max(maxLengthLeft, length);
             }
         }
 
-        // Print rows
+        // Add rows
         int rowCount = 0;
         for (Pair<double[], String> row : plot) {
             String line = "";
 
             // Add a legend to the left
-            if (legend) {
+            if (printLegend) {
                 String interval = intervalString(row.getFirst()[0], row.getFirst()[1]);
                 line += interval;
                 // Fill in case of smaller interval strings
@@ -117,7 +110,7 @@ public class Histogram extends Plot {
             line += row.getSecond();
 
             // Add bin count to the right
-            if (legend) {
+            if (printLegend) {
                 line += CHARACTER_COLUMN_DIVISOR;
                 line += "n=";
                 long n = bounds.get(rowCount).getN();
@@ -127,12 +120,12 @@ public class Histogram extends Plot {
                 }
                 line += n;
             }
-            System.out.println(line);
+            out += line + "\n";
             rowCount++;
         }
 
         // Write x axis labelling under plot
-        if(legend) {
+        if(printLegend) {
             String line = "";
             for (int i = 0; i < maxLengthLeft; i++) {
                line += CHARACTER_EMPTY_BIN;
@@ -144,8 +137,10 @@ public class Histogram extends Plot {
             }
             line +=  "100%";
             line += CHARACTER_COLUMN_DIVISOR;
-            System.out.println(line);
+            out += line + "\n";
         }
+
+        return out;
     }
 
     /**
@@ -162,10 +157,9 @@ public class Histogram extends Plot {
     }
 
     /**
-     * @param dist empirical distribution of data in bins
-     * @return a list containing each bin of the histogram as a Pair of (bin boundaries, bin plot (as String))
+     * @return a list containing each bin of the histogram as a pair of (bin boundaries, bin plot (as String))
      */
-    protected List<Pair<double[], String>> histogram(EmpiricalDistribution dist) {
+    public List<Pair<double[], String>> histogram() {
         List<Pair<double[], String>> histogram = new ArrayList<>();
 
         double min = dist.getSampleStats().getMin();
@@ -193,10 +187,12 @@ public class Histogram extends Plot {
      * @param width total width of the plot
      * @return a String representation of the counts in a bin adjusted to width
      */
-    protected String stringForBin(long n, long N, int width) {
+    protected static String stringForBin(long n, long N, int width) {
+        /*
+         TODO check - might be not correct
+         */
         String output = "";
-        double value = (n / (double) N) * 100d;
-        int maxBin = locateBin(value, width, 0d, 100d);
+        int maxBin = locateBin(n, width, 0d, (double) N);
         for(int i = 0; i < width; i++){
            output += i < maxBin ? CHARACTER_HISTOGRAM : CHARACTER_EMPTY_BIN;
         }

@@ -9,6 +9,6 @@ public class HistogramExample {
                 .setBinNumber(8)
                 .plotObject();
 
-        plot.printPlot();
+        plot.printPlot(true);
     }
 }

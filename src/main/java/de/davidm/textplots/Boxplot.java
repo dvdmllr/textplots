@@ -23,12 +23,10 @@ public class Boxplot extends Plot {
     private final int width;
     private final Double min;
     private final Double max;
-    private final boolean legend;
 
     private Boxplot(BoxplotBuilder boxplotBuilder) {
         this.data = boxplotBuilder.data;
         this.width = boxplotBuilder.width;
-        this.legend = boxplotBuilder.legend;
 
         // Set min and max values
         Pair<Double, Double> minMaxData = getMinimumAndMaximum(data);
@@ -46,7 +44,6 @@ public class Boxplot extends Plot {
         int width = DEFAULT_WIDTH;
         Double min = null;
         Double max = null;
-        boolean legend = true;
 
         /**
          * Construct a Boxplot
@@ -77,14 +74,6 @@ public class Boxplot extends Plot {
         }
 
         /**
-         * @param enable true to show legend, false otherwise
-         */
-        public BoxplotBuilder enableLegend(boolean enable){
-            this.legend = enable;
-            return this;
-        }
-
-        /**
          * @return a Boxplot object with user settings
          */
         public Boxplot plotObject(){
@@ -97,12 +86,16 @@ public class Boxplot extends Plot {
 
     /**
      * Print the Boxplots to command line
+     *
+     * @param printLegend switch legend on/off
      */
     @Override
-    public void printPlot(){
-        List<Pair<String, String>> plots = boxPlots();
+    public String plot(boolean printLegend){
+        String out = "";
 
-        if(legend) {
+        List<Pair<String, String>> plots = boxplots();
+
+        if(printLegend) {
             int maxLength = 0;
 
             // Find max length for name of data series
@@ -112,7 +105,7 @@ public class Boxplot extends Plot {
             }
 
             /*
-             * Print a line for each printPlot
+             * Add a line for each plot
              */
             for (Pair<String, String> element : plots) {
                 String line = "";
@@ -127,7 +120,7 @@ public class Boxplot extends Plot {
                 line += element.getSecond();
                 // Add a final character to show that the plot ended
                 line += CHARACTER_COLUMN_DIVISOR;
-                System.out.println(line);
+                out += line + "\n";
             }
 
             /*
@@ -151,20 +144,20 @@ public class Boxplot extends Plot {
             // Write the maximum to the end of plots
             line += maxString;
             line += CHARACTER_COLUMN_DIVISOR;
-            System.out.println(line);
+            out += line + "\n";
         } else {
-            String out = "";
             for(Pair<String, String> line : plots){
                 out += line.getSecond() + "\n";
             }
-            System.out.println(out);
         }
+
+        return out;
     }
 
     /**
      * @return a list of pairs containing (name of data series, boxplot string)
      */
-    public List<Pair<String, String>> boxPlots(){
+    public List<Pair<String, String>> boxplots(){
         // Create a string representation of a boxplot for each statistic
         List<Pair<String, String>> output = new ArrayList<>();
         for(Pair<String,  double[]> element : data){
@@ -176,7 +169,7 @@ public class Boxplot extends Plot {
             double quartileHigh = stats.getPercentile(75);
             double median = stats.getPercentile(50);
             // Create string using width bins
-            String boxplotString = boxPlotString(min, max, minLocal, maxLocal, quartileLow, quartileHigh, median, width);
+            String boxplotString = boxplotString(min, max, minLocal, maxLocal, quartileLow, quartileHigh, median, width);
             output.add(Pair.create(element.getFirst(), boxplotString));
         }
 
@@ -195,7 +188,7 @@ public class Boxplot extends Plot {
      * @param width width of plots
      * @return a Boxplot as String
      */
-    protected static String boxPlotString(
+    protected static String boxplotString(
         double min, double max, double minLocal, double maxLocal, double quartileLow, double quartileHigh, double median, int width) {
         String[] out = new String[width];
         // Initially fill
