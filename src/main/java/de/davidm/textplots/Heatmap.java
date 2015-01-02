@@ -109,7 +109,7 @@ public class Heatmap extends Plot {
         /**
          * @return a Plot object with user settings
          */
-        public Plot plotObject(){
+        public Heatmap plotObject(){
             // Check for correct width
             Preconditions.checkState(width >= MIN_WIDTH && width <= MAX_WIDTH,
                     "Width is set to " + width + " but needs to be in " + "[" + MIN_WIDTH + "," + MAX_WIDTH + "]");

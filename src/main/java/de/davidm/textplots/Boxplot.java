@@ -85,9 +85,9 @@ public class Boxplot extends Plot {
         }
 
         /**
-         * @return a Plot object with user settings
+         * @return a Boxplot object with user settings
          */
-        public Plot plotObject(){
+        public Boxplot plotObject(){
             // Check for correct width
             Preconditions.checkState(width>=MIN_WIDTH && width <=MAX_WIDTH,
                     "Width is set to " + width + " but needs to be in " + "[" + MIN_WIDTH + "," + MAX_WIDTH + "]");
@@ -164,7 +164,7 @@ public class Boxplot extends Plot {
     /**
      * @return a list of pairs containing (name of data series, boxplot string)
      */
-    protected List<Pair<String, String>> boxPlots(){
+    public List<Pair<String, String>> boxPlots(){
         // Create a string representation of a boxplot for each statistic
         List<Pair<String, String>> output = new ArrayList<>();
         for(Pair<String,  double[]> element : data){

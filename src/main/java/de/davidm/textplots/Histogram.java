@@ -67,7 +67,7 @@ public class Histogram extends Plot {
         /**
          * @return a Plot object with user settings
          */
-        public Plot plotObject(){
+        public Histogram plotObject(){
             // Check for correct width
             Preconditions.checkState(width >= MIN_WIDTH && width <= MAX_WIDTH,
                     "Width is set to " + width + " but needs to be in " + "[" + MIN_WIDTH + "," + MAX_WIDTH + "]");
@@ -153,7 +153,7 @@ public class Histogram extends Plot {
      * @param right right value for interval (exclusive)
      * @return a string representation of an interval for a bin in the histogram
      */
-    private String intervalString(double left, double right){
+    protected String intervalString(double left, double right){
         return (LEGEND_INTERVAL_LEFTBORDER +
                 df.format(left) +
                 LEGEND_INTERVAL_DIVISOR +
@@ -165,7 +165,7 @@ public class Histogram extends Plot {
      * @param dist empirical distribution of data in bins
      * @return a list containing each bin of the histogram as a Pair of (bin boundaries, bin plot (as String))
      */
-    private List<Pair<double[], String>> histogram(EmpiricalDistribution dist) {
+    protected List<Pair<double[], String>> histogram(EmpiricalDistribution dist) {
         List<Pair<double[], String>> histogram = new ArrayList<>();
 
         double min = dist.getSampleStats().getMin();
