@@ -42,19 +42,13 @@ public abstract class Plot {
      * @return bin for a given value
      */
     protected static int locateBin(double value, int width, Double min, Double max) {
-        /*
-         TODO check - leads to errors in certain occassions
-        */
         double span = (max - min);
         double binWidth = span / (1d * width);
-        int i = 0;
-        for(double d = min + binWidth; d < max; d = d + binWidth){
-            if(value < d) {
-                return i;
-            }
-            i++;
+        int bin = (int) ((value - min) / binWidth);
+        if(value >= max){
+            bin = width - 1;
         }
-        return i;
+        return bin;
     }
 
     /**
@@ -69,20 +63,19 @@ public abstract class Plot {
         double span = (max - min);
         double binWidth = span / (1d * width);
         List<Pair<Integer, Double>>  output = new ArrayList<>();
-        int i = 0;
-        for(double d = min + binWidth; d <= max + binWidth; d = d + binWidth){
-            if(value <= d) {
-                int bin1 = i;
-                int bin2 = i + 1;
-                double bin2Prob = (d - value) / binWidth;
-                double bin1Prob = 1 - bin2Prob;
-                output.add(Pair.create(bin1, bin1Prob));
-                output.add(Pair.create(bin2, bin2Prob));
-                return output;
-            }
-            i++;
+        double bin = ((value - min) / binWidth);
+        if(value < max){
+            int bin1 = (int) bin;
+            int bin2 = bin1 + 1;
+            double bin1Prob = bin - (int) bin;
+            double bin2Prob = 1 - bin1Prob;
+            output.add(Pair.create(bin1, bin1Prob));
+            output.add(Pair.create(bin2, bin2Prob));
+        } else {
+            output.add(Pair.create((int) bin - 1, 0.5));
+            output.add(Pair.create((int) bin - 1, 0.5));
         }
-        throw new IllegalStateException("Error finding bin for given values");
+        return output;
     }
 
     /**

@@ -60,6 +60,20 @@ public class PlotTest {
     }
 
     @Test
+    public void testLocateBins(){
+        List<Pair<Integer, Double>> bins1 = Plot.locateBins(3d, 5, 0d, 7d);
+        List<Pair<Integer, Double>> bins2 = Plot.locateBins(4d, 5, 0d, 7d);
+        assertEquals(2, (int) bins1.get(0).getFirst());
+        assertEquals(2, (int) bins2.get(0).getFirst());
+        assertEquals(3, (int) bins1.get(1).getFirst());
+        assertEquals(3, (int) bins2.get(1).getFirst());
+        assertEquals(0.143, bins1.get(0).getSecond(), 0.01);  // 3 / (7 / 5 = 1.4) = 2.143 - 2 = 0.143
+        assertEquals(0.857, bins2.get(0).getSecond(), 0.01);
+        assertEquals(0.857, bins1.get(1).getSecond(), 0.01);
+        assertEquals(0.143, bins2.get(1).getSecond(), 0.01);
+    }
+
+    @Test
     public void testMinMax(){
         Pair<Double, Double> minMax = Plot.getMinimumAndMaximum(data);
         assertEquals(2.0, minMax.getFirst(), 0.0001);

@@ -27,7 +27,7 @@ public class HistogramTest {
     public void testStringForBin(){
         assertEquals(Plot.DEFAULT_WIDTH, Histogram.stringForBin(50, 10, Plot.DEFAULT_WIDTH).length());
         assertEquals(50, binLength(Histogram.stringForBin(50, 100, 100)));
-        assertEquals(14, binLength(Histogram.stringForBin(50, 100, 30)));
+        assertEquals(15, binLength(Histogram.stringForBin(50, 100, 30)));
         assertEquals(27, binLength(Histogram.stringForBin(72, 80, 30)));
     }
 
