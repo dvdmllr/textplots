@@ -1,4 +1,4 @@
-package de.davidm.boxplots;
+package de.davidm.textplots;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.math3.random.EmpiricalDistribution;
