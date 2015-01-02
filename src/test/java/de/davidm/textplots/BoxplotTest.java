@@ -15,8 +15,8 @@ public class BoxplotTest {
         double qHigh = 11d;
         double qMed = 10d;
         int width = 50;
-        String boxplot = Boxplot.boxPlotString(min, max, minLocal, maxLocal, qLow, qHigh, qMed, width);
-        String boxplotExpected = "|-----[░░░░░░░░░░░░░░░|░]-------------------|     ";
+        String boxplot = Boxplot.boxplotString(min, max, minLocal, maxLocal, qLow, qHigh, qMed, width);
+        String boxplotExpected = "|-----[###############|##]-------------------|    ";
         assertEquals(boxplotExpected, boxplot);
     }
 }

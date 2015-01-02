@@ -4,7 +4,11 @@ Textplots is a tiny Java library that creates simple ascii-graphs for input data
 ## Usage
 ### From Code
 
+The library currently supports printing boxplots, histograms and heatmaps to command line. The following shows how this is done from code:
+
 **Boxplots**
+
+Boxplots provide simple means to display distribution parameters of a data series. The implementation allows to plot a set of data series to compare distributions. This can be done in code as follows:
 
 ```java
 List<Pair<String, double[]>> data = new ArrayList<>();
@@ -15,17 +19,44 @@ Plot plot = new Boxplot.BoxplotBuilder(data).plotObject();
 plot.printPlot();
 ```
 
-This will produce the following output to command line:
+Command line output:
 
 ```
-IRIS_SEPAL_LENGTH|                   |-----[░░░░░|░░░░]------------||
-IRIS_SEPAL_WIDTH ||-----[░|░]--------|                              |
-                 |2.00                                          7.90|
+IRIS_SEPAL_LENGTH|                   |------[#####|####]-----------||
+IRIS_SEPAL_WIDTH ||-----[#|##]--------|                             |
+                 |2,00                                          7,90|
+```
+
+**Histograms**
+
+Histograms plot the distribution of data given a fixed number of bins describing a range of values. Occurrence of values for bins is counted, scaled and plotted.
+
+```java
+Plot plot = new Histogram.HistogramBuilder(
+                Pair.create("IRIS_SEPAL_LENGTH", IrisData.IRIS_SEPAL_LENGTH))
+                .setBinNumber(8)
+                .plotObject();
+
+plot.printPlot();
+```
+
+Command line output:
+
+```
+[4,30,4,75)|###                                               |n= 11
+[4,75,5,20)|##########                                        |n= 30
+[5,20,5,65)|########                                          |n= 24
+[5,65,6,10)|##########                                        |n= 30
+[6,10,6,55)|########                                          |n= 25
+[6,55,7,00)|######                                            |n= 18
+[7,00,7,45)|##                                                |n=  6
+[7,45,7,90)|##                                                |n=  6
+           |0%                                            100%|
 ```
 
 **Heatmaps** (experimental)
 
-Additionally the library allows to print heatmaps to command line. Here is an example:
+Heatmaps highlight the common distribution of two data series using simple methods to indicate whether an (x,y) value appeared more or less frequently in the data.
 
 ```java
 Plot plot = new Heatmap.HeatmapBuilder(
@@ -37,29 +68,29 @@ Plot plot = new Heatmap.HeatmapBuilder(
 plot.printPlot();
 ```
 
-This results in the following output (note that github markdown has not the best display here):
+Command line output:
 
 ```
-IRIS_SEPAL_WIDTH|4.40|░▒░░▒░▒░▒▒▒░▒░▒░▒▒░▒▒░░▒▒▒░▒▒▒░░▒░▒▒░░░▒░░░░░░▒░░░|
-                |    |▒▒░░▒▒▒▒▒▓▒▒▒░▒▒▒▒▒▓▒▒░▒▒▒░▓▒▒▒▒▒▒▒▒░░▒▒░░░░░░▒░░▒|
-                |    |▒▒▒▒▓▒▒▒▓▓▓▓▒▒▒▓▓▓▒▓▓▓▒▓▓▓▒▓▓▓▒▒▓▓▒▓▒▒▒▒▒▒▒░░▒▒▒░▒|
-                |    |▒▓▒▒▓▓▓▒▓█▓▓▓▒▒▓▓▓▓█▓▓▒▓▓▓▒█▓▓▓▒▓▓▓▓▒▒▒▓▒▒▒░░▒▓▒░▒|
-                |    |▒▒▓▒▒▓▓█▓███▒▓▒█▓██▓██▓▓██▓▓███▒▓█▒▓▓▒▒▒▓▒▒▒░▒▒▓░▒|
-                |    |▒▓▒▒▓▓▓▓▓██▓▓▓▓▓▓▓▓██▓▒▓▓▓▓██▓▓▒▓▓▓▓▓▒▒▓▒▒▒▒▒▒▓▒░▒|
-                |    |▒▓▓▒█▓▓▓█████▓▓███▓███▓███▓███▓▓██▓█▓▒▒▓▓▒▒▒▒▒▓▓░▒|
-                |    |▓█▓▒█████████▓████████▓███▓████▓████▓▒▓█▓▒▓▒▒▒█▓░▓|
-                |    |▒▓█▓▓███████▓█▓████████████████▒██▓██▓▒▓█▓▒▓▒▓▓█░▒|
-                |    |▒▓▓▒▓▓▓█████▓▓▓███████▓███▓████▓██▓█▓▒▒▓▓▒▒▒▒▒▓▓░▒|
-                |    |▒▓▓▒▓▓▓█▓███▓▓▓█▓█████▓▓██▓████▒▓█▓▓▓▒▒▓▓▒▒▒▒▒▓▓░▒|
-                |    |▓▓▓▒█▓█▓███▓█▓▓▓██▓██▓▒███▓███▓▓█▓██▓▒▓▓▓▒▓░▒▒█▒░▓|
-                |    |▒▒▓▒▒▓▓█▒███▒▓▒█▒██▓▓█▓▒▓██▓███▒▓█▒▓▓▒░▒▓▒░▒░▒▒▓░▒|
-                |    |▒▒▒▒▒▒▒▒▓▓▓▓▒▒▒▓▓▓▓▓▓▓▒▓▓▓▒▓▓▓▓▒▓▓▒▒▒▒▒▒▒▒▒░░▒▒▒░▒|
-                |    |▒▓▒░▓▒▓▒▓█▓▓▓▒▓▓▓▓▒█▓▓▒▓▓▓▒█▓▓▒▒▓▓▓▓▒░▒▓▒▒▒░▒▒▓▒░▒|
-                |    |▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▒▓▓▒▒▒▒▒▒▒▒▒░░▒▒▒░▒|
-                |    |░▒▒░▒▒▒▒▒▒▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒░░▒▒░░░░░▒▒░░|
-                |    |░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒░░▒▒░░░░░▒░░░|
-                |    |░░░░░░░▒▒▒▒▒░░░▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒░▒▒░▒░░░░░░░░░░░░░░|
-                |2.00|░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░|
+IRIS_SEPAL_WIDTH|4.40|                 · ··                             |
+                |    |             ·  ·                                 |
+                |    |            ·                                     |
+                |    |                +   +                             |
+                |    |            # ·#+   ·                           · |
+                |    |     +    ·# ·     +                     +     + +|
+                |    |         ·+ #·   ·                      ·         |
+                |    |     + · #++#·  #       ·  ··                     |
+                |    |  + ·+#  #+·#  +       #  ·+· #+  ++ ++  +        |
+                |    |     # · # ·               #  #  ##  #            |
+                |    | ++   ·+++·     +  #+  #·+     #·+#··  · +    · + |
+                |    | ··   # ··     ·  ·#· ··#· ·· #+·+·   + · ·  · ·  |
+                |    | ·                ·#+  ·+··#··##   ·     ·  +   · |
+                |    |             ·   +·###  #··+ ++   +        ·   ·+ |
+                |    |         +  #   ·+·##  +·  ++·    +               |
+                |    |         +      ·+ ·       +                      |
+                |    |   ·    · ·     +·          ·                     |
+                |    |  +      +      +       +  #                      |
+                |    |          +            #  ·                       |
+                |2.00|         ·                                        |
                      |4.30                                          7.90|
                      |                                 IRIS_SEPAL_LENGTH|
 ```

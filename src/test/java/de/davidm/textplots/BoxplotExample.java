@@ -12,6 +12,6 @@ public class BoxplotExample {
         data.add(Pair.create("IRIS_SEPAL_WIDTH",  IrisData.IRIS_SEPAL_WIDTH));
 
         Plot plot = new Boxplot.BoxplotBuilder(data).plotObject();
-        plot.printPlot();
+        plot.printPlot(true);
     }
 }

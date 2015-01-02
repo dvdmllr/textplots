@@ -8,8 +8,9 @@ public class HeatmapExample {
                 Pair.create("IRIS_SEPAL_LENGTH", IrisData.IRIS_SEPAL_LENGTH),
                 Pair.create("IRIS_SEPAL_WIDTH", IrisData.IRIS_SEPAL_WIDTH))
                 .setSize(50, 20)
+                .setSmoothing(true)
                 .plotObject();
 
-        plot.printPlot();
+        plot.printPlot(true);
     }
 }
