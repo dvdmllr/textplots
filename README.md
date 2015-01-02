@@ -1,5 +1,5 @@
-# Boxplots
-Boxplots is a tiny Java library that creates simple ascii-graphs for input datasets. Build to quickly print data distribution to logging output from code or inspect data from command line.
+# Textplots
+Textplots is a tiny Java library that creates simple ascii-graphs for input datasets. Build to quickly print data distribution to logging output from code or inspect data from command line.
 
 ## Usage
 ### From Code

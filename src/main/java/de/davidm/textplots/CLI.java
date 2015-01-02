@@ -1,4 +1,4 @@
-package de.davidm.boxplots;
+package de.davidm.textplots;
 
 import org.apache.commons.math3.util.Pair;
 import org.kohsuke.args4j.CmdLineException;
