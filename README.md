@@ -8,6 +8,8 @@ The library currently supports printing boxplots, histograms and heatmaps to com
 
 **Boxplots**
 
+Boxplots provide simple means to display distribution parameters of a data series. The implementation allows to plot a set of data series to compare distributions. This can be done in code as follows:
+
 ```java
 List<Pair<String, double[]>> data = new ArrayList<>();
 data.add(Pair.create("IRIS_SEPAL_LENGTH", IrisData.IRIS_SEPAL_LENGTH));
@@ -26,6 +28,8 @@ IRIS_SEPAL_WIDTH ||-----[#|#]--------|                              |
 ```
 
 **Histograms**
+
+Histograms plot the distribution of data given a fixed number of bins describing a range of values. Occurrence of values for bins is counted, scaled and plotted.
 
 ```java
 Plot plot = new Histogram.HistogramBuilder(
@@ -51,6 +55,8 @@ Command line output:
 ```
 
 **Heatmaps** (experimental)
+
+Heatmaps highlight the common distribution of two data series using simple methods to indicate whether an (x,y) value appeared more or less frequently in the data.
 
 ```java
 Plot plot = new Heatmap.HeatmapBuilder(
