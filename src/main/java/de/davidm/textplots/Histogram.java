@@ -11,9 +11,10 @@ import java.util.List;
 public class Histogram extends Plot {
     public static final int DEFAULT_NR_BINS = 10;
     public static final String CHARACTER_HISTOGRAM = "#";
-    public static final String LEGEND_INTERVAL_LEFTBORDER = "[";
+    public static final String LEGEND_INTERVAL_LEFTBORDER_FIRST = "[";
+    public static final String LEGEND_INTERVAL_LEFTBORDER = "(";
     public static final String LEGEND_INTERVAL_DIVISOR = ",";
-    public static final String LEGEND_INTERVAL_RIGHTBORDER = ")";
+    public static final String LEGEND_INTERVAL_RIGHTBORDER = "]";
 
     private final Pair<String, double[]> data;
     private final EmpiricalDistribution dist;
@@ -87,8 +88,9 @@ public class Histogram extends Plot {
         int maxLengthLeft = 0;
         if(printLegend) {
             for(Pair<double[], String> row : plot){
-                int length = intervalString(row.getFirst()[0], row.getFirst()[1]).length();
-                maxLengthLeft = Math.max(maxLengthLeft, length);
+                int length1 = intervalString(false, row.getFirst()[0], row.getFirst()[1]).length();
+                int length2 = intervalString(true, row.getFirst()[0], row.getFirst()[1]).length();
+                maxLengthLeft = Math.max(maxLengthLeft, Math.max(length1, length2));
             }
         }
 
@@ -99,7 +101,7 @@ public class Histogram extends Plot {
 
             // Add a legend to the left
             if (printLegend) {
-                String interval = intervalString(row.getFirst()[0], row.getFirst()[1]);
+                String interval = intervalString(rowCount == 0 ? true : false, row.getFirst()[0], row.getFirst()[1]);
                 line += interval;
                 // Fill in case of smaller interval strings
                 for (int i = interval.length(); i < maxLengthLeft; i++) {
@@ -146,10 +148,12 @@ public class Histogram extends Plot {
     /**
      * @param left left value for interval (inclusive)
      * @param right right value for interval (exclusive)
+     *
      * @return a string representation of an interval for a bin in the histogram
      */
-    protected String intervalString(double left, double right){
-        return (LEGEND_INTERVAL_LEFTBORDER +
+    protected String intervalString(boolean first, double left, double right){
+        return (
+                (first ? LEGEND_INTERVAL_LEFTBORDER_FIRST : LEGEND_INTERVAL_LEFTBORDER) +
                 df.format(left) +
                 LEGEND_INTERVAL_DIVISOR +
                 df.format(right) +
