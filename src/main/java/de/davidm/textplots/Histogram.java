@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Histogram extends Plot {
     public static final int DEFAULT_NR_BINS = 10;
-    public static final String CHARACTER_HISTOGRAM = "▒";
+    public static final String CHARACTER_HISTOGRAM = "#";
     public static final String LEGEND_INTERVAL_LEFTBORDER = "[";
     public static final String LEGEND_INTERVAL_DIVISOR = ",";
     public static final String LEGEND_INTERVAL_RIGHTBORDER = ")";

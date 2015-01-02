@@ -1,6 +1,5 @@
 package de.davidm.textplots;
 
-import de.davidm.textplots.Histogram;
 import org.apache.commons.math3.util.Pair;
 
 public class HistogramExample {

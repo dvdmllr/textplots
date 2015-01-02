@@ -17,7 +17,7 @@ public class Boxplot extends Plot {
     public static final String CHARACTER_BOXPLOT_QUARTILE_LOW = "[";
     public static final String CHARACTER_BOXPLOT_QUARTILE_HIGH = "]";
     public static final String CHARACTER_BOXPLOT_WHISKER = "-";
-    public static final String CHARACTER_BOXPLOT_BODY_FILL = "░";
+    public static final String CHARACTER_BOXPLOT_BODY_FILL = "#";
 
     private final List<Pair<String, double[]>> data;
     private final int width;

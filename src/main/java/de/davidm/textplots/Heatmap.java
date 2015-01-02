@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Heatmap extends Plot {
 
-    public static final String CHARACTER_NO_DENSITY = "░";
-    public static final String CHARACTER_MEDIUM_DENSITY = "▒";
-    public static final String CHARACTER_HIGH_DENSITY = "▓";
-    public static final String CHARACTER_HIGHEST_DENSITY = "█";
+    public static final String CHARACTER_NO_DENSITY = " ";
+    public static final String CHARACTER_MEDIUM_DENSITY = "·";
+    public static final String CHARACTER_HIGH_DENSITY = "+";
+    public static final String CHARACTER_HIGHEST_DENSITY = "#";
 
     public static final int BOUNDARY_NO_DENSITY = 10;
     public static final int BOUNDARY_MEDIUM_DENSITY = 50;
