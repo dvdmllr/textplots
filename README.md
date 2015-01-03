@@ -29,6 +29,8 @@ IRIS_SEPAL_WIDTH ||-----[#|##]--------|                             |
                  |2,00                                          7,90|
 ```
 
+Compare with ggplot2 plot: [click](https://raw.githubusercontent.com/dvdmllr/textplots/master/src/main/resources/r_boxplots.jpeg)
+
 **Histograms**
 
 Histograms display the distribution of a variable by dividing the entire range of its values into smaller intervals (bins) and then counting the number of values falling into each bin.
@@ -55,6 +57,8 @@ Command line output:
 [7,45,7,90)|##                                                |n=  6
            |0%                                            100%|
 ```
+
+Compare with ggplot2 plot: [click](https://raw.githubusercontent.com/dvdmllr/textplots/master/src/main/resources/r_histogram.jpeg)
 
 **Scatterplots**
 
@@ -97,6 +101,8 @@ IRIS_SEPAL_WIDTH|4.40|                 · ··                             |
                      |                                 IRIS_SEPAL_LENGTH|
 ```
 
+
+Compare with ggplot2 plot: [click](https://raw.githubusercontent.com/dvdmllr/textplots/master/src/main/resources/r_scatterplot.jpeg)
 
 ### From Command Line
 mvn:install will produce an executable jar in the target folder which can be called with the following arguments:
