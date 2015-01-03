@@ -97,6 +97,7 @@ IRIS_SEPAL_WIDTH|4.40|                 · ··                             |
                      |                                 IRIS_SEPAL_LENGTH|
 ```
 
+
 ### From Command Line
 mvn:install will produce an executable jar in the target folder which can be called with the following arguments:
 
@@ -120,6 +121,23 @@ java -jar boxplots-1.0.jar -min 0 -max 20
 
 Each data series is enclosed with curly brackets and contains a name and the data points divided by a pipe ("|"). Data is split by a comma (","). Future versions will include parsing of csv files to allow for handling of larger data sets. Setting optional min and max parameters will visually restrict / expand the graph to given range.
 
+
+## R comparison
+
+The following R code uses ggplot2 to generate above diagrams and is provided as means for comparison with a sophisticated plotting tool:
+
+```R
+library(ggplot2)
+library(reshape2)
+# boxplot
+df <- data.frame(iris$Sepal.Width, iris$Sepal.Length)
+md <- melt(df, variables=(c("iris.Sepal.Width", "iris.Sepal.Length")))
+qplot(factor(0),value,data=md, geom='boxplot', color=variable) + xlab("") + coord_flip()
+# histogram
+ggplot(iris, aes(x=Sepal.Length)) + geom_histogram(binwidth=.45, colour="black", fill="white") + scale_x_reverse() + coord_flip()
+# scatterplot
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + geom_point(shape=3)
+```
 
 ## Next Steps
 This library will be completed as I see the need for use in other personal projects. Ideas include
