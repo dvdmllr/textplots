@@ -8,7 +8,7 @@ import org.apache.commons.math3.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Heatmap extends Plot {
+public class Scatterplot extends Plot {
 
     public static final String CHARACTER_NO_DENSITY = " ";
     public static final String CHARACTER_MEDIUM_DENSITY = "·";
@@ -25,32 +25,32 @@ public class Heatmap extends Plot {
     private final Double minX, maxX, minY, maxY;
     private final boolean smoothing;
 
-    private Heatmap(HeatmapBuilder heatmapBuilder) {
-        this.X = heatmapBuilder.x;
-        this.Y = heatmapBuilder.y;
-        this.width = heatmapBuilder.width;
-        this.height = heatmapBuilder.height;
-        this.smoothing = heatmapBuilder.smoothing;
+    private Scatterplot(ScatterplotBuilder scatterplotBuilder) {
+        this.X = scatterplotBuilder.x;
+        this.Y = scatterplotBuilder.y;
+        this.width = scatterplotBuilder.width;
+        this.height = scatterplotBuilder.height;
+        this.smoothing = scatterplotBuilder.smoothing;
 
         // Set min and max values X
         Pair<Double, Double> minMaxData = getMinimumAndMaximum(X.getSecond());
-        minX = heatmapBuilder.minX != null ? heatmapBuilder.minX : minMaxData.getFirst();
-        maxX = heatmapBuilder.maxX != null ? heatmapBuilder.maxX : minMaxData.getSecond();
+        minX = scatterplotBuilder.minX != null ? scatterplotBuilder.minX : minMaxData.getFirst();
+        maxX = scatterplotBuilder.maxX != null ? scatterplotBuilder.maxX : minMaxData.getSecond();
         // Check for correct min and max value settings
         Preconditions.checkState(minX<=maxX, "Minimum value for X needs to be smaller than the maximum");
 
         // Set min and max values Y
         Pair<Double, Double> minMaxDataY = getMinimumAndMaximum(Y.getSecond());
-        minY = heatmapBuilder.minY != null ? heatmapBuilder.minY : minMaxDataY.getFirst();
-        maxY = heatmapBuilder.maxY != null ? heatmapBuilder.maxY : minMaxDataY.getSecond();
+        minY = scatterplotBuilder.minY != null ? scatterplotBuilder.minY : minMaxDataY.getFirst();
+        maxY = scatterplotBuilder.maxY != null ? scatterplotBuilder.maxY : minMaxDataY.getSecond();
         // Check for correct min and max value settings
         Preconditions.checkState(minY<=maxY, "Minimum value for X needs to be smaller than the maximum");
     }
 
     /**
-     * Construct a Heatmap
+     * Construct a Scatterplot
      */
-    public static class HeatmapBuilder{
+    public static class ScatterplotBuilder {
         Pair<String, double[]> x;
         Pair<String, double[]> y;
         Double minX = null, minY = null;
@@ -60,11 +60,11 @@ public class Heatmap extends Plot {
         boolean smoothing = true;
 
         /**
-         * Construct a Heatmap
-         * @param X a String, Double pair representing a data series name and an array of values for X axis
-         * @param Y a String, Double pair representing a data series name and an array of values for Y axis
+         * Construct a Scatterplot
+         * @param X a String, Double pair representing a Pair(variable name, variable data) for X axis
+         * @param Y a String, Double pair representing a Pair(variable name, variable data) for Y axis
          */
-        public HeatmapBuilder(Pair<String, double[]> X, Pair<String, double[]> Y){
+        public ScatterplotBuilder(Pair<String, double[]> X, Pair<String, double[]> Y){
 
             Preconditions.checkArgument(X.getSecond().length == Y.getSecond().length,
                     "Input vectors need to be of the same length. Currently X=" + X.getSecond().length + " and Y=" + Y.getSecond().length);
@@ -77,7 +77,7 @@ public class Heatmap extends Plot {
          * @param height height of plots - attention: additional width is added by names and table formatting
          * @return
          */
-        public HeatmapBuilder setSize(int width, int height){
+        public ScatterplotBuilder setSize(int width, int height){
             this.width = width;
             this.height = height;
             return this;
@@ -90,7 +90,7 @@ public class Heatmap extends Plot {
          * @param minY minimum y value shown in printPlot (optional)
          * @param maxY maximum y value shown in printPlot (optional)
          */
-        public HeatmapBuilder setPlotLimits(Double minX, Double maxX, Double minY, Double maxY){
+        public ScatterplotBuilder setPlotLimits(Double minX, Double maxX, Double minY, Double maxY){
             this.minX = minX;
             this.maxX = maxX;
             this.minY = minY;
@@ -102,33 +102,33 @@ public class Heatmap extends Plot {
          * @param smoothing if true output will be smoothed to better fit to limited amount of bins in command line
          * @return
          */
-        public HeatmapBuilder setSmoothing(boolean smoothing){
+        public ScatterplotBuilder setSmoothing(boolean smoothing){
             this.smoothing = smoothing;
             return this;
         }
 
         /**
-         * @return a Heatmap object with user settings
+         * @return a Scatterplot object with user settings
          */
-        public Heatmap plotObject(){
+        public Scatterplot plotObject(){
             // Check for correct width
             Preconditions.checkState(width >= MIN_WIDTH && width <= MAX_WIDTH,
                     "Width is set to " + width + " but needs to be in " + "[" + MIN_WIDTH + "," + MAX_WIDTH + "]");
             // Check for correct height
             Preconditions.checkState(height >= MIN_HEIGHT && height <= MAX_HEIGHT,
                     "Height is set to " + height + " but needs to be in " + "[" + MIN_HEIGHT + "," + MAX_HEIGHT + "]");
-            return new Heatmap(this);
+            return new Scatterplot(this);
         }
     }
 
     /**
-     * @return the Heatmap in a single String
+     * @return the Scatterplot in a single String
      */
     @Override
     public String plot(boolean printLegend){
         String out = "";
 
-        String[] plot = heatmapString(X.getSecond(), Y.getSecond(), width, height, minX, maxX, minY, maxY, smoothing);
+        String[] plot = scatterplotString(X.getSecond(), Y.getSecond(), width, height, minX, maxX, minY, maxY, smoothing);
 
         if(printLegend) {
 
@@ -187,7 +187,7 @@ public class Heatmap extends Plot {
             out += maxXString;
             out += CHARACTER_COLUMN_DIVISOR + "\n";
 
-            // Add name of data series
+            // Add name of variable
             int nameLength = X.getFirst().length();
             for (int j = 0; j < maxLengthY + 1 + Y.getFirst().length(); j++) {
                 out += CHARACTER_EMPTY_BIN;
@@ -208,7 +208,7 @@ public class Heatmap extends Plot {
     }
 
     /**
-     * Create a string representation of a Heatmap for given variables with one row per line in a String[]
+     * Create a string representation of a Scatterplot for given variables with one row per line in a String[]
      * @param X input X variables
      * @param Y input Y variables
      * @param width width of plot
@@ -218,10 +218,10 @@ public class Heatmap extends Plot {
      * @param minY y axis visual minimum value
      * @param maxY y axis visual maximum value
      * @param smoothing if true output values will be smoothed
-     * @return a Heatmap as String where each element equals a line of the map
+     * @return a Scatterplot as String where each element equals a line of the map
      */
-    protected static String[] heatmapString(
-        double[] X, double[] Y, int width, int height, Double minX, Double maxX, Double minY, Double maxY, boolean smoothing) {
+    protected static String[] scatterplotString(
+            double[] X, double[] Y, int width, int height, Double minX, Double maxX, Double minY, Double maxY, boolean smoothing) {
 
         // Locate visual boundaries
         Pair<Double, Double> minMaxX = getMinimumAndMaximum(X);

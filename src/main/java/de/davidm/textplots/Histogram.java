@@ -37,6 +37,10 @@ public class Histogram extends Plot {
         int bins = DEFAULT_NR_BINS;
         int width = DEFAULT_WIDTH;
 
+        /**
+         * Construct a Histogram
+         * @param data Pair(variable name, variable data)
+         */
         public HistogramBuilder(Pair<String, double[]> data){
             this.data = data;
         }

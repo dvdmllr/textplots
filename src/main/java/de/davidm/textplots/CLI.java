@@ -12,10 +12,10 @@ import java.util.List;
  * A command line interface for textplots
  */
 public class CLI {
-    @Option(name="-width", usage="width of printed boxplots")
+    @Option(name="-width", usage="width of printed plots")
     private Integer cmdWidth = Plot.DEFAULT_WIDTH;
 
-    @Option(name="-height", usage="height of printed boxplots")
+    @Option(name="-height", usage="height of printed plots")
     private Integer cmdHeight= Plot.DEFAULT_HEIGHT;
 
     @Option(name="-data", usage="data to be plotted in the form of {name|value1, value2, ...}{...}", required=true)
@@ -36,7 +36,7 @@ public class CLI {
     @Option(name="-disableLegend", usage="set if no legend should be printed")
     private boolean cmdDisableLegend = false;
 
-    @Option(name="-type", usage="type of plot {boxplot, heatmap}")
+    @Option(name="-type", usage="type of plot {boxplot, scatterplot, histogram}")
     private String type = "boxplot";
 
     public static void main(String[] args) throws CmdLineException {
@@ -55,23 +55,23 @@ public class CLI {
                         .setPlotLimits(cmdMin, cmdMax)
                         .setWidth(cmdWidth)
                         .plotObject();
-            } else if(type.equals("heatmap")){
+            } else if(type.equals("scatterplot")){
                 if(data.size()!=2){
-                    throw new IllegalArgumentException("Data needs to contain exactly 2 sets which will be parsed to X and Y values");
+                    throw new IllegalArgumentException("Data needs to contain exactly 2 variables which will be parsed to X and Y values");
                 }
-                plot = new Heatmap.HeatmapBuilder(data.get(0), data.get(1))
+                plot = new Scatterplot.ScatterplotBuilder(data.get(0), data.get(1))
                         .setPlotLimits(cmdMin, cmdMax, cmdMinY, cmdMaxY)
                         .setSize(cmdWidth, cmdHeight)
                         .plotObject();
             } else if(type.equals("histogram")){
                 if(data.size()!=1){
-                    throw new IllegalArgumentException("Data needs to contain exactly 1 data set");
+                    throw new IllegalArgumentException("Data needs to contain exactly 1 variable");
                 }
                 plot = new Histogram.HistogramBuilder(data.get(0))
                         .setWidth(cmdWidth)
                         .plotObject();
             } else {
-                throw new IllegalArgumentException("Could not match plot type. Needs to be one of (boxplot, heatmap)");
+                throw new IllegalArgumentException("Could not match plot type. Needs to be one of (boxplot, scatterplot, heatmap)");
             }
             plot.printPlot(!cmdDisableLegend);
         } catch (CmdLineException e) {
@@ -80,20 +80,20 @@ public class CLI {
     }
 
     /**
-     * Parse an input String into a list of data series
+     * Parse an input string into input data objects
      *
-     * @param cmdData String representing a list of data series
+     * @param cmdData string representation of a list of variables and their names
      *
      * @return
      */
     protected List<Pair<String, double[]>> parse(String cmdData) {
         List<Pair<String, double[]>> output = new ArrayList<>();
         String[] split = cmdData.split("\\}");
-        for(String dataSeries : split){
-            dataSeries = dataSeries.replaceAll("\\{", "");
-            String[] dataSeriesSplit = dataSeries.split("\\|");
-            String name = dataSeriesSplit[0];
-            double[] data = parseData(dataSeriesSplit[1]);
+        for(String variable : split){
+            variable = variable.replaceAll("\\{", "");
+            String[] variableSplit = variable.split("\\|");
+            String name = variableSplit[0];
+            double[] data = parseData(variableSplit[1]);
             output.add(Pair.create(name, data));
         }
         return output;

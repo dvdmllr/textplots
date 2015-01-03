@@ -34,7 +34,7 @@ public abstract class Plot {
     public abstract String plot(boolean printLegend);
 
     /**
-     * @param value any given value of the data series
+     * @param value any given value of a variable
      * @param width width of the plot for direction
      * @param min   global minimum value
      * @param max   global maximum value
@@ -52,8 +52,8 @@ public abstract class Plot {
     }
 
     /**
-     * @param value any given value of the data series
-     * @param width width of the plot for direction
+     * @param value any given value of a variable
+     * @param width width of the plot
      * @param min   global minimum value
      * @param max   global maximum value
      *
@@ -97,9 +97,9 @@ public abstract class Plot {
     }
 
     /**
-     * @param data set of data series
+     * @param data list of Pair(variable name, variable data)
      *
-     * @return a pair of minimum and maximum values for a list of data series
+     * @return a pair of minimum and maximum values for given input data
      */
     protected static Pair<Double, Double> getMinimumAndMaximum(List<Pair<String, double[]>> data) {
         Double globalMin = null, globalMax = null;

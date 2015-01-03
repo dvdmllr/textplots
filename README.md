@@ -4,11 +4,13 @@ Textplots is a tiny Java library that creates simple ascii-graphs for input data
 ## Usage
 ### From Code
 
-The library currently supports printing boxplots, histograms and heatmaps to command line. The following shows how this is done from code:
+The library currently supports printing boxplots, histograms and scatterplots to command line. The following shows how this is done from code:
 
 **Boxplots**
 
-Boxplots provide simple means to display distribution parameters of a data series. The implementation allows to plot a set of data series to compare distributions. This can be done in code as follows:
+Boxplots display the distribution of a variable in a single plot by visualizing quartiles, minimum and maximum values.
+
+The implementation allows to plot a set of boxplots in vertical direction to compare distributions for a range of variables. This can be done in code as follows:
 
 ```java
 List<Pair<String, double[]>> data = new ArrayList<>();
@@ -29,7 +31,7 @@ IRIS_SEPAL_WIDTH ||-----[#|##]--------|                             |
 
 **Histograms**
 
-Histograms plot the distribution of data given a fixed number of bins describing a range of values. Occurrence of values for bins is counted, scaled and plotted.
+Histograms display the distribution of a variable by dividing the entire range of its values into smaller intervals (bins) and then counting the number of values falling into each bin.
 
 ```java
 Plot plot = new Histogram.HistogramBuilder(
@@ -54,12 +56,12 @@ Command line output:
            |0%                                            100%|
 ```
 
-**Heatmaps** (experimental)
+**Scatterplots**
 
-Heatmaps highlight the common distribution of two data series using simple methods to indicate whether an (x,y) value appeared more or less frequently in the data.
+Scatterplots display the distribution of values for two variables as a collection of points on x, y - coordinates.
 
 ```java
-Plot plot = new Heatmap.HeatmapBuilder(
+Plot plot = new Scatterplot.ScatterplotBuilder(
                 Pair.create("IRIS_SEPAL_LENGTH", IrisData.IRIS_SEPAL_LENGTH),
                 Pair.create("IRIS_SEPAL_WIDTH", IrisData.IRIS_SEPAL_WIDTH))
                 .setSize(50, 20)
@@ -103,10 +105,10 @@ mvn:install will produce an executable jar in the target folder which can be cal
 | -data | _input data string, see below for an example_ | | *X* |
 | -width | _width of plot_ | 50 (chars) | |
 | -height | _height of plot (for heatmaps only)_ | 20 (chars) | |
-| -min | _lower visible boundary of (x) axis_ | minimum value in data | |
-| -max | _upper visible boundary of (x) axis_ | maximum value in data | |
-| -minY | _lower visible boundary of (y) axis_ | minimum value in data | |
-| -maxY | _upper visible boundary of (y) axis_ | maximum value in data | |
+| -min | _lower visible boundary of (x) axis_ | minimum value in input data | |
+| -max | _upper visible boundary of (x) axis_ | maximum value in input data | |
+| -minY | _lower visible boundary of (y) axis_ | minimum value in input data | |
+| -maxY | _upper visible boundary of (y) axis_ | maximum value in input data | |
 | -type | _type of plot (boxplot or heatmap)_ | boxplot | |
 
 Here is an example:

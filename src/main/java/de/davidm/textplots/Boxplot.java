@@ -47,7 +47,7 @@ public class Boxplot extends Plot {
 
         /**
          * Construct a Boxplot
-         * @param data a list of data series and a name for each in the form of : Pair(name of data series, data)
+         * @param data Pair(variable name, variable data)
          */
         public BoxplotBuilder(List<Pair<String, double[]>> data){
            this.data = data;
@@ -98,7 +98,7 @@ public class Boxplot extends Plot {
         if(printLegend) {
             int maxLength = 0;
 
-            // Find max length for name of data series
+            // Find max length for name of variable
             for (Pair<String, String> element : plots) {
                 int length = element.getFirst().length();
                 if (length > maxLength) maxLength = length;
@@ -116,7 +116,7 @@ public class Boxplot extends Plot {
                 }
                 // Add a character to divide name and plot
                 line += CHARACTER_COLUMN_DIVISOR;
-                // Plot data as boxplot
+                // Plot variable as boxplot
                 line += element.getSecond();
                 // Add a final character to show that the plot ended
                 line += CHARACTER_COLUMN_DIVISOR;
@@ -155,13 +155,13 @@ public class Boxplot extends Plot {
     }
 
     /**
-     * @return a list of pairs containing (name of data series, boxplot string)
+     * @return a list of pairs containing (variable name, boxplot string)
      */
     public List<Pair<String, String>> boxplots(){
         // Create a string representation of a boxplot for each statistic
         List<Pair<String, String>> output = new ArrayList<>();
-        for(Pair<String,  double[]> element : data){
-            DescriptiveStatistics stats = new DescriptiveStatistics(element.getSecond());
+        for(Pair<String,  double[]> variable : data){
+            DescriptiveStatistics stats = new DescriptiveStatistics(variable.getSecond());
             // Note: this uses a simple approach where the whiskers represent min and max of each statistic
             double minLocal = stats.getMin();
             double maxLocal = stats.getMax();
@@ -170,7 +170,7 @@ public class Boxplot extends Plot {
             double median = stats.getPercentile(50);
             // Create string using width bins
             String boxplotString = boxplotString(min, max, minLocal, maxLocal, quartileLow, quartileHigh, median, width);
-            output.add(Pair.create(element.getFirst(), boxplotString));
+            output.add(Pair.create(variable.getFirst(), boxplotString));
         }
 
         return output;
@@ -180,11 +180,11 @@ public class Boxplot extends Plot {
      * Create a string representation of a Boxplot for given variables
      * @param min visual minimum value
      * @param max visual maximum value
-     * @param minLocal actual minimum value for this data series
-     * @param maxLocal actual maximum value for this data series
-     * @param quartileLow 0.25 quartile for this data series
-     * @param quartileHigh 0.75 quartile for this data series
-     * @param median 0.5 quartile for this data series
+     * @param minLocal actual minimum value for variable
+     * @param maxLocal actual maximum value for variable
+     * @param quartileLow 0.25 quartile for this variable
+     * @param quartileHigh 0.75 quartile for this variable
+     * @param median 0.5 quartile for this variable
      * @param width width of plots
      * @return a Boxplot as String
      */
