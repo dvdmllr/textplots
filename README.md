@@ -104,12 +104,12 @@ mvn:install will produce an executable jar in the target folder which can be cal
 | --- | --- | --- | --- |
 | -data | _input data string, see below for an example_ | | *X* |
 | -width | _width of plot_ | 50 (chars) | |
-| -height | _height of plot (for heatmaps only)_ | 20 (chars) | |
+| -height | _height of plot (for scatterplots only)_ | 20 (chars) | |
 | -min | _lower visible boundary of (x) axis_ | minimum value in input data | |
 | -max | _upper visible boundary of (x) axis_ | maximum value in input data | |
 | -minY | _lower visible boundary of (y) axis_ | minimum value in input data | |
 | -maxY | _upper visible boundary of (y) axis_ | maximum value in input data | |
-| -type | _type of plot (boxplot or heatmap)_ | boxplot | |
+| -type | _type of plot (boxplot, histogram or scatterplot)_ | boxplot | |
 
 Here is an example:
 
