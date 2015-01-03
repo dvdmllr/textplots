@@ -196,9 +196,6 @@ public class Histogram extends Plot {
      * @return a String representation of the counts in a bin adjusted to width
      */
     protected static String stringForBin(long n, long N, int width) {
-        /*
-         TODO check - might be not correct
-         */
         String output = "";
         int maxBin = locateBin(n, width, 0d, (double) N);
         for(int i = 0; i < width; i++){
